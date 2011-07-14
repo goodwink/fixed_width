@@ -1,21 +1,21 @@
 class FixedWidth
   class Definition
-    attr_reader :sections, :templates, :options
+    attr_reader :section_groups, :templates, :options
 
     def initialize(options={})
-      @sections  = []
+      @groups  = []
       @templates = {}
       @options   = { :align => :right }.merge(options)
     end
+    
+    def section_group(name, options={}, &block)
+      raise DuplicateSectionNameError.new("Duplicate section group name: '#{name}'") if @groups.detect{|s| s.name == name }
 
-    def section(name, options={}, &block)
-      raise DuplicateSectionNameError.new("Duplicate section name: '#{name}'") if @sections.detect{|s| s.name == name }
-
-      section = FixedWidth::Section.new(name, @options.merge(options))
-      section.definition = self
-      yield(section)
-      @sections << section
-      section
+      group = FixedWidth::SectionGroup.new(name, @options.merge(options))
+      group.group = self
+      yield(group)
+      @groups << group
+      group
     end
 
     def template(name, options={}, &block)
@@ -25,7 +25,7 @@ class FixedWidth
     end
 
     def method_missing(method, *args, &block)
-      section(method, *args, &block)
+      section_group(method, *args, &block)
     end
   end
 end

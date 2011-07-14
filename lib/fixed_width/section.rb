@@ -1,6 +1,6 @@
 class FixedWidth
   class Section
-    attr_accessor :definition, :optional, :singular
+    attr_accessor :section_group, :optional, :singular
     attr_reader :name, :columns, :options
 
     def initialize(name, options={})
@@ -86,6 +86,10 @@ class FixedWidth
 
     def unpacker
       @unpacker ||= @columns.map(&:unpacker).join
+    end
+    
+    def definition
+      @section_group.definition
     end
   end
 end

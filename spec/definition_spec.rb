@@ -18,9 +18,12 @@ describe FixedWidth::Definition do
     it "should override the default if :align is passed to the section" do
       section = mock('section', :null_object => true)
       FixedWidth::Section.should_receive(:new).with('name', {:align => :left}).and_return(section)
+      #group = mock('group', :null_object => true)
+      #FixedWidth::SectionGroup.should_receive(:new).with('name').and_return(group)
       d = FixedWidth::Definition.new
       d.options[:align].should == :right
-      d.section('name', :align => :left) {}
+      g = d.section_group('name') {}
+      g.section('name', :align => :left) {}
     end
   end
 
